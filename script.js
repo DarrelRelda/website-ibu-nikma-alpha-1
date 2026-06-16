@@ -12,9 +12,27 @@ const closeSettings=document.getElementById("closeSettings");
 const secretMenu=document.getElementById("secretMenu");
 const closeSecret=document.getElementById("closeSecret");
 
+const creditsBtn=document.getElementById("creditsBtn");
+const creditsMenu=document.getElementById("creditsMenu");
+const closeCredits=document.getElementById("closeCredits");
+
+const modBtn=document.getElementById("modBtn");
+const modMenu=document.getElementById("modMenu");
+const closeMod=document.getElementById("closeMod");
+
+const optionBtn=document.getElementById("optionBtn");
+const optionMenu=document.getElementById("optionMenu");
+const closeOption=document.getElementById("closeOption");
+
+const limboToggle=document.getElementById("limboToggle");
+
 const wrapper=document.querySelector(".wrapper");
 
 let settingsOpen=false;
+let limboMode=false;
+
+let limboTimer=null;
+let limboInterval=null;
 
 let current=0;
 let selected=null;
@@ -99,12 +117,24 @@ correct:["malas"]
 
 function loadQuestion(){
 
+if(current>=questions.length)return;
+
 if(isLoading)return;
 isLoading=true;
 
 quizBox.classList.add("fade-out");
 
 setTimeout(()=>{
+
+if(limboTimer){
+clearTimeout(limboTimer);
+limboTimer=null;
+}
+
+if(limboInterval){
+clearInterval(limboInterval);
+limboInterval=null;
+}
 
 const q=questions[current];
 
@@ -127,7 +157,12 @@ shuffle(q.answers).forEach(text=>{
 
 const btn=document.createElement("div");
 btn.className="answer-btn";
-btn.textContent=text;
+btn.dataset.answer=text;
+
+const span=document.createElement("span");
+span.className="answer-text";
+span.textContent=text;
+btn.appendChild(span);
 
 if(q.answers.length===1){
 btn.classList.add("single-answer");
@@ -136,8 +171,9 @@ btn.classList.add("single-answer");
 btn.onclick=()=>{
 
 if(phase!=="answer")return;
+if(limboMode && answersWrap.classList.contains("limbo-locked"))return;
 
-document.querySelectorAll(".answer-btn")
+answersWrap.querySelectorAll(".answer-btn")
 .forEach(b=>b.classList.remove("selected"));
 
 btn.classList.add("selected");
@@ -161,7 +197,146 @@ quizBox.classList.remove("fade-out");
 
 isLoading=false;
 
+if(limboMode){
+startLimboSequence(q);
+}
+
 },450);
+
+}
+
+/* LIMBO MODE */
+
+function startLimboSequence(q){
+
+const btns=[...answersWrap.querySelectorAll(".answer-btn")];
+
+if(btns.length===0)return;
+
+answersWrap.classList.add("limbo-locked");
+
+btns.forEach(btn=>{
+
+if(q.correct.includes(btn.dataset.answer)){
+btn.classList.add("pulse-correct");
+}else{
+btn.classList.add("pulse-wrong");
+}
+
+});
+
+setTimeout(()=>{
+
+btns.forEach(btn=>{
+
+btn.classList.remove("pulse-correct","pulse-wrong");
+
+const span=btn.querySelector(".answer-text");
+if(span)span.classList.add("hidden-text");
+
+});
+
+setTimeout(()=>{
+
+beginShuffleSwap(btns);
+
+},400);
+
+},1500);
+
+}
+
+function beginShuffleSwap(btns){
+
+const positions=btns.map(btn=>({
+top:btn.offsetTop,
+left:btn.offsetLeft,
+width:btn.offsetWidth
+}));
+
+let currentOrder=positions.map((_,i)=>i);
+
+function shuffleNoFixedPoints(arr){
+
+if(arr.length<2)return [...arr];
+
+let result;
+
+do{
+
+result=shuffle(arr);
+
+}while(result.some((val,idx)=>val===arr[idx]));
+
+return result;
+
+}
+
+answersWrap.classList.add("limbo-shuffling");
+
+btns.forEach((btn,i)=>{
+btn.style.width=positions[i].width+"px";
+btn.style.top=positions[i].top+"px";
+btn.style.left=positions[i].left+"px";
+});
+
+function swapOnce(){
+
+currentOrder=shuffleNoFixedPoints(currentOrder);
+
+btns.forEach((btn,i)=>{
+const posIndex=currentOrder[i];
+btn.style.top=positions[posIndex].top+"px";
+btn.style.left=positions[posIndex].left+"px";
+});
+
+}
+
+limboInterval=setInterval(swapOnce,500);
+
+limboTimer=setTimeout(()=>{
+
+clearInterval(limboInterval);
+limboInterval=null;
+
+answersWrap.classList.remove("limbo-shuffling");
+
+btns.forEach(btn=>{
+btn.style.top="";
+btn.style.left="";
+btn.style.width="";
+});
+
+answersWrap.classList.remove("limbo-locked");
+
+},15000);
+
+}
+
+function revealLimboText(){
+
+if(limboTimer){
+clearTimeout(limboTimer);
+limboTimer=null;
+}
+
+if(limboInterval){
+clearInterval(limboInterval);
+limboInterval=null;
+}
+
+answersWrap.classList.remove("limbo-shuffling","limbo-locked");
+
+document.querySelectorAll(".answer-btn").forEach(btn=>{
+
+btn.style.top="";
+btn.style.left="";
+btn.style.width="";
+
+const span=btn.querySelector(".answer-text");
+if(span)span.classList.remove("hidden-text");
+
+});
 
 }
 
@@ -176,7 +351,10 @@ lockBtn.classList.add("btn-pop");
 }
 
 /* SETTINGS */
+
 settingsBtn.onclick=()=>{
+
+if(isLoading)return;
 
 settingsClickCount++;
 
@@ -235,8 +413,165 @@ wrapper.classList.remove("screen-fade");
 
 closeSettings.onclick=closeSettingsMenu;
 
+/* CREDITS MENU */
+
+creditsBtn.onclick=()=>{
+
+openCredits();
+
+};
+
+function openCredits(){
+
+settingsMenu.style.animation="fadeMenuOut .45s forwards";
+
+setTimeout(()=>{
+
+settingsMenu.classList.remove("show");
+settingsMenu.style.animation="";
+
+creditsMenu.style.display="block";
+
+setTimeout(()=>{
+creditsMenu.classList.add("show");
+},20);
+
+},430);
+
+}
+
+function closeCreditsMenu(){
+
+creditsMenu.classList.remove("show");
+
+setTimeout(()=>{
+
+creditsMenu.style.display="none";
+
+settingsMenu.classList.add("show");
+
+},450);
+
+}
+
+closeCredits.onclick=closeCreditsMenu;
+
+/* MOD MENU */
+
+modBtn.onclick=()=>{
+
+openMod();
+
+};
+
+function openMod(){
+
+settingsMenu.style.animation="fadeMenuOut .45s forwards";
+
+setTimeout(()=>{
+
+settingsMenu.classList.remove("show");
+settingsMenu.style.animation="";
+
+modMenu.style.display="block";
+
+setTimeout(()=>{
+modMenu.classList.add("show");
+},20);
+
+},430);
+
+}
+
+function closeModMenu(){
+
+modMenu.classList.remove("show");
+
+setTimeout(()=>{
+
+modMenu.style.display="none";
+
+settingsMenu.classList.add("show");
+
+},450);
+
+}
+
+closeMod.onclick=closeModMenu;
+
+limboToggle.onclick=()=>{
+
+limboMode=!limboMode;
+
+limboToggle.classList.toggle("on",limboMode);
+
+if(
+limboMode &&
+phase==="answer" &&
+!answersWrap.classList.contains("limbo-locked") &&
+!answersWrap.classList.contains("limbo-shuffling")
+){
+
+const q=questions[current];
+
+if(q){
+startLimboSequence(q);
+}
+
+}
+
+};
+
+/* OPTION MENU */
+
+optionBtn.onclick=()=>{
+
+openOption();
+
+};
+
+function openOption(){
+
+settingsMenu.style.animation="fadeMenuOut .45s forwards";
+
+setTimeout(()=>{
+
+settingsMenu.classList.remove("show");
+settingsMenu.style.animation="";
+
+optionMenu.style.display="block";
+
+setTimeout(()=>{
+optionMenu.classList.add("show");
+},20);
+
+},430);
+
+}
+
+function closeOptionMenu(){
+
+optionMenu.classList.remove("show");
+
+setTimeout(()=>{
+
+optionMenu.style.display="none";
+
+settingsMenu.classList.add("show");
+
+},450);
+
+}
+
+closeOption.onclick=closeOptionMenu;
+
 /* SECRET MENU */
+
 function openSecret(){
+
+if(secretMenu.classList.contains("show")) return;
+
+settingsBtn.classList.add("disabled");
 
 wrapper.classList.add("screen-fade");
 
@@ -263,6 +598,8 @@ setTimeout(()=>{
 secretMenu.style.display="none";
 
 wrapper.style.display="flex";
+
+settingsBtn.classList.remove("disabled");
 
 setTimeout(()=>{
 wrapper.classList.remove("screen-fade");
@@ -293,21 +630,32 @@ lockBtn.onclick=()=>{
 
 const q=questions[current];
 
+if(!q)return;
+
 if(phase==="answer"){
 
-if(!selected)return;
+if(!selected || !selectedValue)return;
 
 phase="next";
 
 const benar=q.correct.includes(selectedValue);
 
+if(limboMode){
+revealLimboText();
+}
+
 document.querySelectorAll(".answer-btn").forEach(btn=>{
 
-if(q.correct.includes(btn.textContent)){
+btn.classList.remove("pulse-correct","pulse-wrong");
+
+if(q.correct.includes(btn.dataset.answer)){
 btn.classList.add("correct");
 }
 
-if(btn===selected && !q.correct.includes(btn.textContent)){
+if(
+btn===selected &&
+!q.correct.includes(btn.dataset.answer)
+){
 btn.classList.add("wrong");
 }
 
@@ -331,7 +679,11 @@ animateButton();
 
 lockBtn.textContent=
 q.special ||
-NEXT_TEXT[Math.floor(Math.random()*NEXT_TEXT.length)];
+NEXT_TEXT[
+Math.floor(
+Math.random()*NEXT_TEXT.length
+)
+];
 
 }else{
 
@@ -340,7 +692,11 @@ lockBtn.style.background="#ff3b3b";
 animateButton();
 
 lockBtn.textContent=
-WRONG_TEXT[Math.floor(Math.random()*WRONG_TEXT.length)];
+WRONG_TEXT[
+Math.floor(
+Math.random()*WRONG_TEXT.length
+)
+];
 
 }
 

@@ -4,50 +4,101 @@
 <title>Quiz Darrel</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div id="settingsBtn">⚙</div>
 
+<!-- SETTINGS MENU -->
 <div id="settingsMenu" class="glass-box">
-
   <div class="settings-content">
-    
     <div class="question-box">
       Settings
     </div>
-
-    <div class="answers">
-      <div id="closeSettings" class="answer-btn">Close</div>
+    <div class="answers settings-grid">
+      <div class="answer-btn setting-item" id="modBtn">
+        Mod
+      </div>
+      <div class="answer-btn setting-item" id="creditsBtn">
+        Credits
+      </div>
+      <div class="answer-btn setting-item" id="optionBtn">
+        Option
+      </div>
     </div>
-
+    <div class="settings-close-wrap">
+      <div id="closeSettings" class="answer-btn close-btn">
+        Close
+      </div>
+    </div>
   </div>
+</div>
 
+<!-- CREDITS POPUP -->
+<div id="creditsMenu" class="glass-box">
+  <div class="secret-close" id="closeCredits">
+    ✖
+  </div>
+  <div class="question-box">
+    Credits
+  </div>
+  <div class="credits-list">
+    <div class="credit-item">1. Ibu Nikma - Guru</div>
+    <div class="credit-item">2. Raisa - Kawan 1 / Bantu buat ini</div>
+    <div class="credit-item">3. Ghazi - Kawan 2</div>
+    <div class="credit-item">4. Feisya - Kawan 3</div>
+    <div class="credit-item">5. Hatim - Kawan 4</div>
+    <div class="credit-item">6. Lucky - Kawan 5 / Bantu buat yang dulu</div>
+    <div class="credit-item">7. Laptop - mesin untuk buat ini</div>
+    <div class="credit-item">8. Kamu - gtw</div>
+  </div>
+</div>
+
+<!-- MOD POPUP -->
+<div id="modMenu" class="glass-box">
+  <div class="secret-close" id="closeMod">
+    ✖
+  </div>
+  <div class="question-box">
+    Mod
+  </div>
+  <div class="mod-row">
+    <span class="mod-label">Limbo</span>
+    <div id="limboToggle" class="toggle-switch">
+      <div class="toggle-knob"></div>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION POPUP -->
+<div id="optionMenu" class="glass-box">
+  <div class="secret-close" id="closeOption">
+    ✖
+  </div>
+  <div class="question-box">
+    Option
+  </div>
 </div>
 
 <!-- SECRET POPUP -->
 <div id="secretMenu" class="glass-box">
-
-<div class="secret-close" id="closeSecret">✖</div>
-
-<div class="question-box">
-e<br><br>halo<br>halo
-</div>
-
+  <div class="secret-close" id="closeSecret">
+    ✖
+  </div>
+  <div class="question-box">
+    e<br><br>
+    halo<br>
+    halo
+  </div>
 </div>
 
 <div class="wrapper">
-
-<div class="quiz-container glass-box">
-
-<div id="soalBox" class="question-box"></div>
-
-<div id="answers" class="answers"></div>
-
-</div>
-
-<button id="lockBtn">Kunci Jawaban</button>
-
+  <div class="quiz-container glass-box">
+    <div id="soalBox" class="question-box"></div>
+    <div id="answers" class="answers"></div>
+  </div>
+  <button id="lockBtn">
+    Kunci Jawaban
+  </button>
 </div>
 
 <div class="credit">
@@ -55,6 +106,5 @@ made by Darrel <span class="heart">&lt;3</span>
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>

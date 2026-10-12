@@ -1324,6 +1324,14 @@ const a = audio || document.getElementById("tidesAudio") || window._tidesAudio;
     if (!npWidget) return;
     npWidget.classList.add("show");
     npWidget.setAttribute("aria-hidden", "false");
+    // default expanded → kunci jawaban naik di atas player
+    if (!npMinimized) {
+      document.body.classList.add("np-expanded");
+      document.body.classList.remove("np-minimized");
+    } else {
+      document.body.classList.add("np-minimized");
+      document.body.classList.remove("np-expanded");
+    }
     if (npRaf) cancelAnimationFrame(npRaf);
     npRaf = requestAnimationFrame(npTick);
     const el = npGetAudio();
@@ -1342,6 +1350,7 @@ const a = audio || document.getElementById("tidesAudio") || window._tidesAudio;
     npWidget.classList.remove("show");
     npWidget.classList.remove("minimized");
     npMinimized = false;
+    document.body.classList.remove("np-expanded", "np-minimized");
     npWidget.setAttribute("aria-hidden", "true");
     if (npRaf) {
       cancelAnimationFrame(npRaf);
@@ -1358,8 +1367,12 @@ const a = audio || document.getElementById("tidesAudio") || window._tidesAudio;
     if (!npWidget) return;
     if (npMinimized) {
       npWidget.classList.add("minimized");
+      document.body.classList.add("np-minimized");
+      document.body.classList.remove("np-expanded");
     } else {
       npWidget.classList.remove("minimized");
+      document.body.classList.remove("np-minimized");
+      document.body.classList.add("np-expanded");
     }
     if (npMinBtn) {
       npMinBtn.setAttribute("aria-label", npMinimized ? "Expand player" : "Minimize player");

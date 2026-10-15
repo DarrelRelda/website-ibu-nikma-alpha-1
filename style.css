@@ -333,7 +333,7 @@ body {
   display: none;
   opacity: 0;
   pointer-events: none;
-  z-index: 9998;
+  z-index: 10100;
   background: rgba(10, 15, 30, 0.6);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -378,7 +378,7 @@ body {
   width: 560px;
   display: none;
   opacity: 0;
-  z-index: 9999;
+  z-index: 10110;
   background: rgba(10, 15, 30, 0.6);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -2501,34 +2501,162 @@ body.hp-mode .action-row {
 }
 
 
-/* ========== FORCE HP: player kanan atas (override semua rule lama) ========== */
+/* ========== FORCE HP: player kanan atas + tidak overlap menu ========== */
 @media screen and (max-width: 700px) {
+  /* Player di bawah menu (menu z 10100) */
   #nowPlaying.np-widget,
   .np-widget,
   .np-widget.show,
   .np-widget.show:not(.minimized) {
     position: fixed !important;
-    top: max(12px, env(safe-area-inset-top, 0px)) !important;
-    right: 12px !important;
+    top: max(64px, calc(env(safe-area-inset-top, 0px) + 56px)) !important;
+    /* di bawah tombol settings/hide */
+    right: 10px !important;
     left: auto !important;
     bottom: auto !important;
-    width: min(200px, calc(100vw - 90px)) !important;
-    max-width: min(200px, calc(100vw - 90px)) !important;
+    width: 168px !important;
+    max-width: 168px !important;
     min-width: 0 !important;
     height: auto !important;
-    padding: 8px !important;
-    gap: 8px !important;
-    border-radius: 14px !important;
+    padding: 8px 8px 8px 8px !important;
+    gap: 0 !important;
+    border-radius: 16px !important;
     transform: none !important;
     margin: 0 !important;
-    z-index: 10040 !important;
+    z-index: 40 !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
   }
 
+  /* Layout vertikal: cover + teks, progress, controls, volume */
+  #nowPlaying.np-widget .np-art-wrap,
+  .np-widget .np-art-wrap {
+    width: 100% !important;
+    height: 72px !important;
+    border-radius: 10px !important;
+    margin-bottom: 6px !important;
+  }
+  #nowPlaying.np-widget .np-art,
+  .np-widget .np-art {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+  #nowPlaying.np-widget .np-body,
+  .np-widget .np-body {
+    width: 100% !important;
+    min-width: 0 !important;
+    gap: 5px !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  #nowPlaying.np-widget .np-meta,
+  .np-widget .np-meta {
+    padding-right: 22px !important; /* ruang tombol minimize */
+  }
+  #nowPlaying.np-widget .np-title,
+  .np-widget .np-title {
+    font-size: 11px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  #nowPlaying.np-widget .np-artist,
+  .np-widget .np-artist {
+    font-size: 9px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  #nowPlaying.np-widget .np-progress-row,
+  .np-widget .np-progress-row {
+    width: 100% !important;
+    gap: 4px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  #nowPlaying.np-widget .np-time,
+  .np-widget .np-time {
+    font-size: 8px !important;
+    min-width: 22px !important;
+    flex-shrink: 0 !important;
+  }
+  #nowPlaying.np-widget .np-seek-wrap,
+  .np-widget .np-seek-wrap {
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+  #nowPlaying.np-widget .np-controls,
+  .np-widget .np-controls {
+    width: 100% !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    margin: 2px 0 !important;
+  }
+  #nowPlaying.np-widget .np-play,
+  .np-widget .np-play {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  #nowPlaying.np-widget .np-btn:not(.np-play),
+  .np-widget .np-btn:not(.np-play) {
+    width: 22px !important;
+    height: 22px !important;
+    opacity: 0.45 !important;
+  }
+
+  /* Volume: full width, centered, tidak kepotong */
+  #nowPlaying.np-widget .np-vol-row,
+  .np-widget .np-vol-row {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    margin-top: 2px !important;
+    box-sizing: border-box !important;
+    padding: 0 2px !important;
+  }
+  #nowPlaying.np-widget .np-vol-icon,
+  .np-widget .np-vol-icon {
+    width: 12px !important;
+    height: 12px !important;
+    flex-shrink: 0 !important;
+  }
+  #nowPlaying.np-widget .np-vol,
+  .np-widget .np-vol,
+  #npVolume {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+
+  /* Tombol minimize di pojok — kecil rapi */
+  #nowPlaying.np-widget .np-min-btn,
+  .np-widget .np-min-btn {
+    position: absolute !important;
+    top: 6px !important;
+    right: 6px !important;
+    width: 22px !important;
+    height: 22px !important;
+    border-radius: 8px !important;
+    background: rgba(0, 0, 0, 0.35) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #fff !important;
+    z-index: 5 !important;
+  }
+
+  /* Minimized: pill > yang rapi, bukan aneh */
   #nowPlaying.np-widget.minimized,
   .np-widget.minimized {
     position: fixed !important;
-    top: max(12px, env(safe-area-inset-top, 0px)) !important;
-    right: 12px !important;
+    top: max(64px, calc(env(safe-area-inset-top, 0px) + 56px)) !important;
+    right: 10px !important;
     left: auto !important;
     bottom: auto !important;
     width: 40px !important;
@@ -2536,61 +2664,67 @@ body.hp-mode .action-row {
     min-width: 40px !important;
     height: 40px !important;
     padding: 0 !important;
+    border-radius: 12px !important;
     transform: none !important;
-    z-index: 10055 !important;
+    z-index: 40 !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+    overflow: hidden !important;
   }
-
-  #nowPlaying.np-widget .np-art-wrap,
-  .np-widget .np-art-wrap {
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 8px !important;
-    flex-shrink: 0 !important;
+  #nowPlaying.np-widget.minimized .np-min-btn,
+  .np-widget.minimized .np-min-btn {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    border: none !important;
+    border-radius: 12px !important;
+    background: transparent !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
-
-  #nowPlaying.np-widget .np-title,
-  .np-widget .np-title {
-    font-size: 11px !important;
-  }
-  #nowPlaying.np-widget .np-artist,
-  .np-widget .np-artist {
-    font-size: 9px !important;
-  }
-  #nowPlaying.np-widget .np-controls,
-  .np-widget .np-controls {
-    gap: 8px !important;
-  }
-  #nowPlaying.np-widget .np-play,
-  .np-widget .np-play {
-    width: 24px !important;
-    height: 24px !important;
-  }
-  #nowPlaying.np-widget .np-time,
-  .np-widget .np-time {
-    font-size: 9px !important;
-  }
-  #nowPlaying.np-widget .np-min-btn,
-  .np-widget .np-min-btn {
-    top: 4px !important;
-    right: 4px !important;
+  #nowPlaying.np-widget.minimized .np-min-btn .np-chevron,
+  .np-widget.minimized .np-min-btn .np-chevron {
     width: 20px !important;
     height: 20px !important;
+    transform: rotate(0deg) !important; /* > kanan */
   }
 
-  /* Kunci jawaban tetap bawah — tidak ikut naik */
+  /* Kunci jawaban tetap bawah */
   .action-row {
     bottom: max(14px, env(safe-area-inset-bottom, 0px)) !important;
     padding-left: 0 !important;
-    z-index: 10050 !important;
+    z-index: 50 !important;
   }
   body.tides-active.np-expanded .action-row,
   body.tides-active.np-minimized .action-row {
     bottom: max(14px, env(safe-area-inset-bottom, 0px)) !important;
     padding-left: 0 !important;
   }
+
+  /* Menu di atas player */
+  #settingsMenu,
+  #creditsMenu,
+  #creditDetailMenu,
+  #extraMenu,
+  #optionMenu,
+  #bgMenu,
+  #secretMenu,
+  #reviewMenu,
+  #skipWarnMenu,
+  #endMenu {
+    z-index: 10100 !important;
+  }
 }
 
-/* PC tetap kiri bawah */
+/* PC: kiri bawah, z di bawah menu */
 @media screen and (min-width: 701px) {
   #nowPlaying.np-widget,
   .np-widget,
@@ -2599,6 +2733,10 @@ body.hp-mode .action-row {
     right: auto !important;
     left: 16px !important;
     bottom: 42px !important;
+    z-index: 40 !important;
+    width: min(300px, calc(100vw - 32px)) !important;
+    max-width: min(300px, calc(100vw - 32px)) !important;
+    flex-direction: row !important;
   }
   #nowPlaying.np-widget.minimized,
   .np-widget.minimized {
@@ -2606,5 +2744,18 @@ body.hp-mode .action-row {
     right: auto !important;
     left: 16px !important;
     bottom: 42px !important;
+    z-index: 40 !important;
+  }
+  #settingsMenu,
+  #creditsMenu,
+  #creditDetailMenu,
+  #extraMenu,
+  #optionMenu,
+  #bgMenu,
+  #secretMenu,
+  #reviewMenu,
+  #skipWarnMenu,
+  #endMenu {
+    z-index: 10100 !important;
   }
 }

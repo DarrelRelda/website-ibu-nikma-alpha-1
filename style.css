@@ -2319,30 +2319,23 @@ body.ui-hidden .np-widget {
     font-size: 16px !important;
   }
 
-  /* Tombol Kunci Jawaban — fixed, selalu di layar */
+  /* Tombol Kunci Jawaban — tetap di bawah, tidak naik di atas musik */
   .action-row {
     position: fixed !important;
     left: 50% !important;
     bottom: max(14px, env(safe-area-inset-bottom, 0px)) !important;
     transform: translate(-50%, 0) !important;
-    z-index: 10050 !important; /* di atas np-widget (10040) */
+    z-index: 10050 !important;
     max-width: 94vw !important;
     width: 100% !important;
     padding: 0 12px !important;
     margin: 0 !important;
   }
 
-  /* Saat player musik FULL terbuka: naikkan kunci jawaban di atas player */
-  body.tides-active:has(.np-widget.show:not(.minimized)) .action-row,
-  body.tides-active.np-expanded .action-row {
-    bottom: max(148px, calc(env(safe-area-inset-bottom, 0px) + 140px)) !important;
-  }
-
-  /* Saat player minimized: kunci di bawah, di samping tombol > */
-  body.tides-active:has(.np-widget.minimized) .action-row,
+  body.tides-active.np-expanded .action-row,
   body.tides-active.np-minimized .action-row {
     bottom: max(14px, env(safe-area-inset-bottom, 0px)) !important;
-    padding-left: 56px !important; /* ruang untuk tombol > kiri */
+    padding-left: 0 !important;
   }
 
   .action-row .btn-primary,
@@ -2361,24 +2354,80 @@ body.ui-hidden .np-widget {
     pointer-events: none;
   }
 
-  /* Player di bawah, di bawah kunci jawaban saat expanded */
+  /* HP: music player di KANAN ATAS, lebih kecil */
   .np-widget {
     z-index: 10040 !important;
   }
+  .np-widget.show,
   .np-widget.show:not(.minimized) {
-    left: 12px !important;
+    top: max(14px, env(safe-area-inset-top, 0px)) !important;
     right: 12px !important;
-    width: auto !important;
-    max-width: none !important;
-    bottom: max(12px, env(safe-area-inset-bottom, 0px)) !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: min(220px, calc(100vw - 88px)) !important;
+    max-width: min(220px, calc(100vw - 88px)) !important;
+    transform: translateX(12px) !important;
+    padding: 8px !important;
+    gap: 8px !important;
+    border-radius: 14px !important;
+  }
+  .np-widget.show {
+    /* slide in dari kanan di HP */
+  }
+  .np-widget.show:not(.minimized) {
+    transform: translateX(0) !important;
+  }
+  .np-widget.show .np-art-wrap {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 8px !important;
+  }
+  .np-widget.show .np-title {
+    font-size: 11px !important;
+  }
+  .np-widget.show .np-artist {
+    font-size: 9px !important;
+  }
+  .np-widget.show .np-controls {
+    gap: 10px !important;
+  }
+  .np-widget.show .np-play {
+    width: 26px !important;
+    height: 26px !important;
+  }
+  .np-widget.show .np-btn {
+    width: 22px !important;
+    height: 22px !important;
+  }
+  .np-widget.show .np-min-btn {
+    top: 4px !important;
+    right: 4px !important;
+    width: 22px !important;
+    height: 22px !important;
+  }
+  .np-widget.show .np-progress-row,
+  .np-widget.show .np-vol-row {
+    gap: 6px !important;
+  }
+  .np-widget.show .np-time {
+    font-size: 9px !important;
   }
 
+  /* Minimized di HP: tetap kanan atas */
   .np-widget.minimized {
-    left: 12px !important;
-    bottom: max(14px, env(safe-area-inset-bottom, 0px)) !important;
-    z-index: 10055 !important; /* sejajar kunci */
+    top: max(14px, env(safe-area-inset-top, 0px)) !important;
+    right: 12px !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 40px !important;
+    max-width: 40px !important;
+    min-width: 40px !important;
+    height: 40px !important;
+    z-index: 10055 !important;
+    transform: none !important;
   }
 }
+
 
 /* Layar pendek / landscape HP */
 @media (max-height: 560px) {
@@ -2427,18 +2476,23 @@ body.hp-mode .action-row {
 }
 
 
-/* PC/tablet: kunci jawaban di atas player kalau player expanded */
+/* PC: music player tetap kiri bawah (tidak diubah) */
 @media (min-width: 701px) {
-  body.tides-active:has(.np-widget.show:not(.minimized)) .action-row,
-  body.tides-active.np-expanded .action-row {
-    bottom: max(160px, calc(env(safe-area-inset-bottom, 0px) + 150px)) !important;
+  .np-widget {
+    top: auto !important;
+    right: auto !important;
+    left: 16px !important;
+    bottom: 42px !important;
   }
-  body.tides-active:has(.np-widget.minimized) .action-row,
+  .np-widget.minimized {
+    top: auto !important;
+    right: auto !important;
+    left: 16px !important;
+    bottom: 42px !important;
+  }
+  body.tides-active.np-expanded .action-row,
   body.tides-active.np-minimized .action-row {
     bottom: max(20px, env(safe-area-inset-bottom, 0px)) !important;
-    padding-left: 64px !important;
-  }
-  .action-row {
-    z-index: 10050 !important;
+    padding-left: 0 !important;
   }
 }

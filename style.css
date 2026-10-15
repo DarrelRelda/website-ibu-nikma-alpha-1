@@ -2098,13 +2098,16 @@ body.ui-hidden .np-widget {
 
 @media (max-width: 700px) {
   .np-widget {
-    left: 12px;
-    bottom: 36px;
-    width: calc(100vw - 24px);
-    max-width: 360px;
-    padding: 12px;
-    gap: 12px;
-    border-radius: 18px;
+    /* posisi final di override akhir file — jangan force kiri bawah */
+    left: auto;
+    right: 12px;
+    top: 14px;
+    bottom: auto;
+    width: min(220px, calc(100vw - 88px));
+    max-width: min(220px, calc(100vw - 88px));
+    padding: 8px;
+    gap: 8px;
+    border-radius: 14px;
   }
   .np-art-wrap {
     width: 64px;
@@ -2494,5 +2497,114 @@ body.hp-mode .action-row {
   body.tides-active.np-minimized .action-row {
     bottom: max(20px, env(safe-area-inset-bottom, 0px)) !important;
     padding-left: 0 !important;
+  }
+}
+
+
+/* ========== FORCE HP: player kanan atas (override semua rule lama) ========== */
+@media screen and (max-width: 700px) {
+  #nowPlaying.np-widget,
+  .np-widget,
+  .np-widget.show,
+  .np-widget.show:not(.minimized) {
+    position: fixed !important;
+    top: max(12px, env(safe-area-inset-top, 0px)) !important;
+    right: 12px !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: min(200px, calc(100vw - 90px)) !important;
+    max-width: min(200px, calc(100vw - 90px)) !important;
+    min-width: 0 !important;
+    height: auto !important;
+    padding: 8px !important;
+    gap: 8px !important;
+    border-radius: 14px !important;
+    transform: none !important;
+    margin: 0 !important;
+    z-index: 10040 !important;
+  }
+
+  #nowPlaying.np-widget.minimized,
+  .np-widget.minimized {
+    position: fixed !important;
+    top: max(12px, env(safe-area-inset-top, 0px)) !important;
+    right: 12px !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 40px !important;
+    max-width: 40px !important;
+    min-width: 40px !important;
+    height: 40px !important;
+    padding: 0 !important;
+    transform: none !important;
+    z-index: 10055 !important;
+  }
+
+  #nowPlaying.np-widget .np-art-wrap,
+  .np-widget .np-art-wrap {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 8px !important;
+    flex-shrink: 0 !important;
+  }
+
+  #nowPlaying.np-widget .np-title,
+  .np-widget .np-title {
+    font-size: 11px !important;
+  }
+  #nowPlaying.np-widget .np-artist,
+  .np-widget .np-artist {
+    font-size: 9px !important;
+  }
+  #nowPlaying.np-widget .np-controls,
+  .np-widget .np-controls {
+    gap: 8px !important;
+  }
+  #nowPlaying.np-widget .np-play,
+  .np-widget .np-play {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  #nowPlaying.np-widget .np-time,
+  .np-widget .np-time {
+    font-size: 9px !important;
+  }
+  #nowPlaying.np-widget .np-min-btn,
+  .np-widget .np-min-btn {
+    top: 4px !important;
+    right: 4px !important;
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  /* Kunci jawaban tetap bawah — tidak ikut naik */
+  .action-row {
+    bottom: max(14px, env(safe-area-inset-bottom, 0px)) !important;
+    padding-left: 0 !important;
+    z-index: 10050 !important;
+  }
+  body.tides-active.np-expanded .action-row,
+  body.tides-active.np-minimized .action-row {
+    bottom: max(14px, env(safe-area-inset-bottom, 0px)) !important;
+    padding-left: 0 !important;
+  }
+}
+
+/* PC tetap kiri bawah */
+@media screen and (min-width: 701px) {
+  #nowPlaying.np-widget,
+  .np-widget,
+  .np-widget.show {
+    top: auto !important;
+    right: auto !important;
+    left: 16px !important;
+    bottom: 42px !important;
+  }
+  #nowPlaying.np-widget.minimized,
+  .np-widget.minimized {
+    top: auto !important;
+    right: auto !important;
+    left: 16px !important;
+    bottom: 42px !important;
   }
 }

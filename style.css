@@ -2374,9 +2374,6 @@ body.ui-hidden .np-widget {
     gap: 8px !important;
     border-radius: 14px !important;
   }
-  .np-widget.show {
-    /* slide in dari kanan di HP */
-  }
   .np-widget.show:not(.minimized) {
     transform: translateX(0) !important;
   }

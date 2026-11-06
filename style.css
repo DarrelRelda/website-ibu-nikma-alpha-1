@@ -435,9 +435,32 @@ body {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
-  max-height: 70vh;
+  max-height: min(62vh, 520px);
   overflow-y: auto;
-  padding-right: 4px;
+  padding-right: 6px;
+  padding-bottom: 8px;
+  /* hilangkan scrollbar putih default */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+  -ms-overflow-style: none;
+}
+.review-list::-webkit-scrollbar {
+  width: 6px;
+}
+.review-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.review-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+}
+.review-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+.review-list::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
 }
 .review-item {
   display: flex;
@@ -2183,14 +2206,18 @@ body.ui-hidden .np-widget {
 }
 
 /* MINIMIZED: hanya tombol > rounded di kiri bawah */
-.np-widget.minimized {
+.np-widget.minimized,
+.np-widget.show.minimized,
+#nowPlaying.np-widget.minimized {
   width: 48px !important;
   max-width: 48px !important;
   min-width: 48px !important;
   height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
   padding: 0 !important;
   gap: 0 !important;
-  border-radius: 16px !important; /* rounded, bukan 90° */
+  border-radius: 14px !important;
   cursor: pointer;
   background: rgba(255, 255, 255, 0.08) !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
@@ -2198,6 +2225,11 @@ body.ui-hidden .np-widget {
     0 6px 20px rgba(0, 0, 0, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
   transform: translateX(0) !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-direction: row !important;
 }
 .np-widget.minimized .np-art-wrap,
 .np-widget.minimized .np-body,
@@ -2761,12 +2793,27 @@ body.hp-mode .action-row {
     flex-direction: row !important;
   }
   #nowPlaying.np-widget.minimized,
-  .np-widget.minimized {
+  .np-widget.minimized,
+  .np-widget.show.minimized,
+  #nowPlaying.np-widget.show.minimized {
     top: auto !important;
     right: auto !important;
     left: 16px !important;
     bottom: 42px !important;
     z-index: 40 !important;
+    width: 48px !important;
+    max-width: 48px !important;
+    min-width: 48px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    border-radius: 14px !important;
+    overflow: hidden !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   #settingsMenu,
   #creditsMenu,
@@ -2780,4 +2827,335 @@ body.hp-mode .action-row {
   #endMenu {
     z-index: 10100 !important;
   }
+}
+
+
+/* ========== ANTI-CHEAT ========== */
+.anti-cheat-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+.anti-cheat-overlay.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.anti-cheat-box {
+  width: min(420px, 90vw);
+  text-align: center;
+  padding: 36px 28px !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  animation: acPulseIn 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes acPulseIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+.anti-cheat-icon {
+  font-size: 42px;
+  line-height: 1;
+  margin-bottom: 14px;
+  filter: drop-shadow(0 0 12px rgba(255, 80, 80, 0.55));
+}
+.anti-cheat-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ff7b7b;
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
+}
+.anti-cheat-msg {
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.88);
+  margin-bottom: 18px;
+}
+.anti-cheat-count {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.04em;
+}
+.anti-cheat-count span {
+  color: #ff8080;
+  font-weight: 700;
+}
+/* Saat anti-cheat aktif, kunci interaksi UI di belakang */
+body.anti-cheat-lock .wrapper,
+body.anti-cheat-lock .action-row,
+body.anti-cheat-lock #settingsBtn,
+body.anti-cheat-lock #hideBtn,
+body.anti-cheat-lock .np-widget {
+  pointer-events: none !important;
+  filter: blur(2px);
+}
+
+/* MINIMIZED SQUARE FORCE — tombol expand kotak, bukan persegi panjang */
+#nowPlaying.np-widget.minimized,
+.np-widget.minimized,
+.np-widget.show.minimized {
+  width: 48px !important;
+  max-width: 48px !important;
+  min-width: 48px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+}
+#nowPlaying.np-widget.minimized .np-art-wrap,
+#nowPlaying.np-widget.minimized .np-body,
+.np-widget.minimized .np-art-wrap,
+.np-widget.minimized .np-body {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+#nowPlaying.np-widget.minimized .np-min-btn,
+.np-widget.minimized .np-min-btn {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  border-radius: 14px !important;
+}
+
+
+/* ========== LEGACY MODE (style versi lama) ========== */
+body.legacy-mode {
+  background: #071a2f !important;
+}
+body.legacy-mode .kaleidoscope,
+body.legacy-mode #ocean,
+body.legacy-mode #bgFadeOverlay,
+body.legacy-mode .np-widget,
+body.legacy-mode #hideBtn {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+body.legacy-mode .wrapper::before {
+  display: none !important;
+}
+body.legacy-mode .glass-box {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
+  border-radius: 25px !important;
+  padding: 40px !important;
+}
+body.legacy-mode .quiz-container {
+  width: 560px !important;
+  max-width: 92vw !important;
+}
+body.legacy-mode .question-box {
+  background: #6b6b6b !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 28px !important;
+  border-radius: 18px !important;
+  font-size: 22px !important;
+  color: #fff !important;
+}
+body.legacy-mode .answer-btn {
+  background: #000 !important;
+  border: 3px solid transparent !important;
+  border-radius: 14px !important;
+  color: #fff !important;
+  font-size: 17px !important;
+  padding: 16px !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+body.legacy-mode .answer-btn:hover {
+  border: 3px solid yellow !important;
+  background: #000 !important;
+  transform: translateY(-6px) !important;
+  box-shadow: none !important;
+}
+body.legacy-mode .answer-btn.selected {
+  border: 3px solid yellow !important;
+  background: #000 !important;
+  box-shadow: none !important;
+}
+body.legacy-mode .answer-btn.correct {
+  background: #4cff7a !important;
+  color: #000 !important;
+  border-color: transparent !important;
+}
+body.legacy-mode .answer-btn.wrong {
+  background: #ff6b6b !important;
+  color: #000 !important;
+  border-color: transparent !important;
+}
+body.legacy-mode .answer-btn.pulse-correct {
+  border: 3px solid #4cff7a !important;
+}
+body.legacy-mode .answer-btn.pulse-wrong {
+  border: 3px solid #ff6b6b !important;
+}
+body.legacy-mode #settingsBtn {
+  background: #0b0b0b !important;
+  border: 2px solid #fff !important;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: none !important;
+  border-radius: 14px !important;
+}
+body.legacy-mode #settingsBtn.ready:hover,
+body.legacy-mode #settingsBtn.ready:active {
+  transform: rotate(90deg) scale(1.1) !important;
+}
+body.legacy-mode .btn-primary,
+body.legacy-mode #lockBtn {
+  background: #3a7dff !important;
+  border-radius: 14px !important;
+  width: 260px !important;
+  max-width: 85vw !important;
+}
+body.legacy-mode .action-row {
+  max-width: 280px !important;
+}
+body.legacy-mode .mod-row {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+body.legacy-mode .credit-item {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+body.legacy-mode .credit {
+  opacity: 0.8 !important;
+  font-size: 14px !important;
+}
+body.legacy-mode .heart {
+  color: #ff4da6 !important;
+}
+body.legacy-mode #settingsMenu,
+body.legacy-mode #creditsMenu,
+body.legacy-mode #creditDetailMenu,
+body.legacy-mode #extraMenu,
+body.legacy-mode #optionMenu,
+body.legacy-mode #bgMenu,
+body.legacy-mode #secretMenu,
+body.legacy-mode #reviewMenu,
+body.legacy-mode #skipWarnMenu,
+body.legacy-mode #endMenu {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
+}
+body.legacy-mode.hp-mode .quiz-container,
+body.legacy-mode.hp-mode #settingsMenu,
+body.legacy-mode.hp-mode #creditsMenu,
+body.legacy-mode.hp-mode #extraMenu,
+body.legacy-mode.hp-mode #optionMenu,
+body.legacy-mode.hp-mode #secretMenu {
+  width: 92vw !important;
+  max-width: 480px !important;
+}
+body.legacy-mode.hp-mode .glass-box {
+  padding: 24px 18px !important;
+}
+body.legacy-mode.hp-mode .question-box {
+  font-size: 18px !important;
+  padding: 20px 16px !important;
+}
+body.legacy-mode.hp-mode .answer-btn {
+  font-size: 15px !important;
+  padding: 14px 10px !important;
+}
+
+
+/* ========== STYLE SWITCH FADE (modern ↔ legacy) ========== */
+#styleFadeOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200000;
+  background: #071a2f;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+#styleFadeOverlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* transisi properti visual utama */
+body,
+.kaleidoscope,
+.glass-box,
+.question-box,
+.answer-btn,
+#settingsBtn,
+.mod-row,
+.credit-item,
+.btn-primary,
+#lockBtn {
+  transition:
+    background 0.45s ease,
+    background-color 0.45s ease,
+    border-color 0.45s ease,
+    box-shadow 0.45s ease,
+    color 0.35s ease,
+    opacity 0.45s ease,
+    filter 0.45s ease,
+    transform 0.35s ease;
+}
+ body.legacy-mode .kaleidoscope {
+  transition: opacity 0.45s ease;
+}
+
+/* Background terkunci di Legacy mode */
+.legacy-bg-lock {
+  text-align: center;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 0 0 14px;
+}
+body.legacy-mode .bg-options {
+  opacity: 0.42;
+  filter: grayscale(0.35);
+  pointer-events: none;
+}
+body.legacy-mode .bg-options .toggle-switch,
+body.legacy-mode .bg-options .mod-row {
+  cursor: not-allowed !important;
+}
+body.legacy-mode #legacyBgLock {
+  display: block !important;
+}
+#legacyBgLock[hidden] {
+  display: none !important;
+}
+body.legacy-mode #legacyBgLock[hidden] {
+  display: block !important;
 }

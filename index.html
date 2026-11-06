@@ -10,6 +10,7 @@
   <div class="kaleidoscope"></div>
   <canvas id="ocean"></canvas>
   <div id="bgFadeOverlay"></div>
+  <div id="styleFadeOverlay"></div>
   <div id="settingsBtn">⚙</div>
   <div id="hideBtn" class="hide-btn" aria-label="Hide UI">
     <svg class="hide-eye-svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
@@ -45,15 +46,11 @@
         <button class="credit-view-btn" data-person="raisa">Lihat</button>
       </div>
       <div class="credit-item">
-        <span class="credit-text">3. Lucky - Kawan 2</span>
+        <span class="credit-text">3. Lucky - Kawan 2 / bantu buat yg lama</span>
         <button class="credit-view-btn" data-person="lucky">Lihat</button>
       </div>
       <div class="credit-item">
-        <span class="credit-text">4. Kaisan - Kawan 3</span>
-        <button class="credit-view-btn" data-person="kaisan">Lihat</button>
-      </div>
-      <div class="credit-item">
-        <span class="credit-text">5. Darrel - buat ini semua</span>
+        <span class="credit-text">4. Darrel - buat ini semua</span>
         <button class="credit-view-btn" data-person="darrel">Lihat</button>
       </div>
     </div>
@@ -86,6 +83,12 @@
           <div class="toggle-knob"></div>
         </div>
       </div>
+      <div class="mod-row">
+        <span class="mod-label">Legacy mode</span>
+        <div id="legacyToggle" class="toggle-switch">
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
     </div>
   </div>
   <!-- OPTION POPUP -->
@@ -105,6 +108,9 @@
   <div id="bgMenu" class="glass-box">
     <div class="secret-close" id="closeBg">✖</div>
     <div class="question-box">Background</div>
+    <div id="legacyBgLock" class="legacy-bg-lock" hidden>
+      Background ga bisa diganti di Legacy mode
+    </div>
     <div class="bg-options">
       <div class="mod-row">
         <span class="mod-label">Horizon Shift <span class="default-label">(default)</span></span>
@@ -163,7 +169,7 @@
   <!-- REVIEW POPUP -->
   <div id="reviewMenu" class="glass-box">
     <div class="secret-close" id="closeReview">✖</div>
-    <div class="question-box">Review Jawaban</div>
+    <div class="question-box">Jawaban</div>
     <div class="review-list" id="reviewList"></div>
   </div>
   <!-- SKIP WARNING POPUP -->
@@ -190,6 +196,19 @@
       </div>
     </div>
   </div>
+  <!-- ANTI-CHEAT OVERLAY -->
+  <div id="antiCheatOverlay" class="anti-cheat-overlay" aria-hidden="true">
+    <div class="anti-cheat-box glass-box">
+      <div class="anti-cheat-icon" id="antiCheatIcon">⚠</div>
+      <div class="anti-cheat-title" id="antiCheatTitle">Anti Cheat Detected</div>
+      <div class="anti-cheat-msg" id="antiCheatMsg">
+        Anda terdeteksi keluar dari Website ini. Anti cheat ini berfungsi untuk mencegah orang orang yang mencari jawaban di internet, jika anda tidak sengaja / hp atau laptop anda mati beri device kalian ke guru kalian.
+      </div>
+      <div class="anti-cheat-count">Peringatan ke : <span id="antiCheatCount">0</span></div>
+    </div>
+  </div>
+  </div>
+
   <div class="wrapper page-fade">
     <div class="quiz-container glass-box">
       <div class="question-row">
